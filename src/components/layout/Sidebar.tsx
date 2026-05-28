@@ -124,7 +124,9 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
         <nav className="space-y-5">
           {NAV_SECTIONS.map((section) => {
             const visibleItems = section.items.filter(
-              (item) => !profile || canViewModule(profile.role, item.module)
+              (item) =>
+                !profile ||
+                canViewModule(profile.role, item.module, profile.pagePermissions)
             );
             if (visibleItems.length === 0) return null;
 

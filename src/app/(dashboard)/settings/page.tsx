@@ -5,7 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Loader2, Settings, Users, Building2, Tag } from "lucide-react";
+import { Loader2, Users, Building2, Tag, ShieldCheck } from "lucide-react";
+import { UserAccessDialog } from "@/components/settings/UserAccessDialog";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,8 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
+  const [accessUser, setAccessUser] = useState<UserProfile | null>(null);
+  const [accessOpen, setAccessOpen] = useState(false);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<CompanyForm>({
     resolver: zodResolver(companySchema),
@@ -193,22 +196,51 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y">
-                {users.map((user) => (
-                  <div key={user.id} className="flex items-center justify-between px-6 py-3">
-                    <div>
-                      <p className="font-medium text-sm">{user.displayName}</p>
-                      <p className="text-xs text-muted-foreground">{user.email}</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${ROLE_COLORS[user.role]}`}>
-                        {ROLE_LABELS[user.role]}
-                      </span>
-                      <Badge variant={user.isActive ? "success" : "secondary"} className="text-xs">
-                        {user.isActive ? "Active" : "Inactive"}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
+                {loadingUsers
+                  ? Array.from({ length: 3 }).map((_, i) => (
+                      <div key={i} className="px-6 py-3.5">
+                        <div className="h-3.5 w-40 bg-muted rounded animate-pulse mb-1.5" />
+                        <div className="h-3 w-32 bg-muted rounded animate-pulse" />
+                      </div>
+                    ))
+                  : users.map((user) => (
+                      <div
+                        key={user.id}
+                        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 sm:px-6 py-3"
+                      >
+                        <div className="min-w-0">
+                          <p className="font-medium text-sm truncate">{user.displayName}</p>
+                          <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                          {user.pagePermissions && Array.isArray(user.pagePermissions) && (
+                            <p className="text-[10px] text-primary mt-0.5">
+                              Custom access &middot; {user.pagePermissions.length} pages
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${ROLE_COLORS[user.role]}`}>
+                            {ROLE_LABELS[user.role]}
+                          </span>
+                          <Badge variant={user.isActive ? "success" : "secondary"} className="text-xs">
+                            {user.isActive ? "Active" : "Inactive"}
+                          </Badge>
+                          {isAdmin && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-7 px-2 text-xs"
+                              onClick={() => {
+                                setAccessUser(user);
+                                setAccessOpen(true);
+                              }}
+                            >
+                              <ShieldCheck className="h-3.5 w-3.5 mr-1" />
+                              Access
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
               </div>
             </CardContent>
           </Card>
@@ -251,6 +283,15 @@ export default function SettingsPage() {
           </form>
         </TabsContent>
       </Tabs>
+
+      <UserAccessDialog
+        user={accessUser}
+        open={accessOpen}
+        onOpenChange={setAccessOpen}
+        onSaved={(updated) =>
+          setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)))
+        }
+      />
     </div>
   );
 }

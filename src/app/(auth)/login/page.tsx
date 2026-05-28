@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Loader2, Lock, Mail, ArrowRight, Sparkles } from "lucide-react";
+import { Loader2, Lock, Mail, ArrowRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -132,26 +132,6 @@ export default function LoginPage() {
               )}
             </Button>
           </form>
-
-          {/* Demo credentials */}
-          <div className="mt-6 rounded-lg border border-dashed border-border bg-muted/30 p-4">
-            <div className="flex items-center gap-1.5 mb-2">
-              <Sparkles className="h-3 w-3 text-primary" />
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-foreground/70">
-                Demo credentials
-              </p>
-            </div>
-            <div className="space-y-1 text-xs">
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Email</span>
-                <span className="font-mono text-foreground">admin@supportmena.com</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Password</span>
-                <span className="font-mono text-foreground">Admin@123</span>
-              </div>
-            </div>
-          </div>
         </div>
 
         <p className="text-center lg:text-left text-[11px] text-muted-foreground mt-8">

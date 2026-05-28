@@ -165,9 +165,38 @@ export function hasPermission(
   return allowedRoles.includes(role);
 }
 
-export function canViewModule(role: UserRole, module: string): boolean {
+export function canViewModule(
+  role: UserRole,
+  module: string,
+  pagePermissions?: string[] | null
+): boolean {
+  // super_admin always has access — never lock the owner out via overrides.
+  if (role === "super_admin") return true;
+  if (pagePermissions && Array.isArray(pagePermissions)) {
+    return pagePermissions.includes(module);
+  }
   return hasPermission(role, module, "view");
 }
+
+export const ALL_MODULES: { id: string; label: string; group: string }[] = [
+  { id: "dashboard", label: "Dashboard", group: "Overview" },
+  { id: "crm", label: "CRM / Clients", group: "Business" },
+  { id: "quotations", label: "Quotations", group: "Business" },
+  { id: "invoices", label: "Invoices", group: "Business" },
+  { id: "projects", label: "Projects", group: "Operations" },
+  { id: "tasks", label: "Tasks", group: "Operations" },
+  { id: "amc", label: "AMC", group: "Operations" },
+  { id: "inventory", label: "Inventory", group: "Inventory" },
+  { id: "purchase", label: "Purchase", group: "Inventory" },
+  { id: "suppliers", label: "Suppliers", group: "Inventory" },
+  { id: "hrms", label: "HRMS", group: "HR & Finance" },
+  { id: "attendance", label: "Attendance", group: "HR & Finance" },
+  { id: "leave", label: "Leave", group: "HR & Finance" },
+  { id: "petty_cash", label: "Petty Cash", group: "HR & Finance" },
+  { id: "expenses", label: "Expenses", group: "HR & Finance" },
+  { id: "reports", label: "Reports", group: "Analytics" },
+  { id: "settings", label: "Settings", group: "Analytics" },
+];
 
 export const ROLE_LABELS: Record<UserRole, string> = {
   super_admin: "Super Admin",
