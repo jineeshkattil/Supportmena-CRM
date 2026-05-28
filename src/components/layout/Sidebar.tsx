@@ -6,7 +6,7 @@ import {
   LayoutDashboard, Users, FileText, Receipt, Briefcase,
   CheckSquare, RefreshCw, Package, ShoppingCart, Truck,
   UserCircle, Clock, CalendarDays, Wallet, CreditCard,
-  BarChart2, Settings, ChevronDown, LogOut, User,
+  BarChart2, Settings, LogOut, Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -83,20 +83,44 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
   };
 
   return (
-    <div className="flex h-full flex-col bg-navy-900">
+    <div className="relative flex h-full flex-col bg-[hsl(222_47%_8%)] overflow-hidden">
+      {/* Subtle gradient overlay */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/[0.03] via-transparent to-transparent"
+      />
+
       {/* Logo */}
-      <div className="flex h-14 items-center gap-3 px-4 border-b border-navy-800">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+      <div className="relative flex h-14 items-center gap-2.5 px-4 border-b border-white/[0.06]">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-indigo-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] ring-1 ring-white/10">
           <span className="text-white font-bold text-sm">S</span>
         </div>
-        <div>
-          <p className="text-white font-semibold text-sm leading-tight">SupportMENA OS</p>
-          <p className="text-navy-400 text-[10px]">Operations Platform</p>
+        <div className="min-w-0">
+          <p className="text-white font-semibold text-[13px] leading-tight tracking-tight">SupportMENA OS</p>
+          <p className="text-white/40 text-[10px] tracking-wide">Operations Platform</p>
         </div>
       </div>
 
+      {/* Search hint */}
+      <div className="relative px-3 pt-3">
+        <button
+          type="button"
+          className="group flex w-full items-center gap-2 rounded-md border border-white/[0.06] bg-white/[0.03] px-2.5 h-8 text-left transition-colors hover:bg-white/[0.06] hover:border-white/10"
+          onClick={() => {
+            const input = document.querySelector<HTMLInputElement>("[data-global-search]");
+            input?.focus();
+          }}
+        >
+          <Search className="h-3.5 w-3.5 text-white/40 group-hover:text-white/60 transition-colors" />
+          <span className="text-[12px] text-white/40 group-hover:text-white/60 transition-colors flex-1">Quick search</span>
+          <kbd className="hidden md:inline-flex items-center rounded border border-white/10 bg-white/[0.04] px-1.5 h-4 text-[9px] font-medium text-white/50 tracking-wider">
+            ⌘K
+          </kbd>
+        </button>
+      </div>
+
       {/* Nav */}
-      <ScrollArea className="flex-1 px-3 py-3">
+      <ScrollArea className="relative flex-1 px-3 py-3">
         <nav className="space-y-5">
           {NAV_SECTIONS.map((section) => {
             const visibleItems = section.items.filter(
@@ -106,7 +130,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
 
             return (
               <div key={section.title}>
-                <p className="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-widest text-navy-500">
+                <p className="mb-1.5 px-2.5 text-[10px] font-medium uppercase tracking-[0.15em] text-white/40">
                   {section.title}
                 </p>
                 <ul className="space-y-0.5">
@@ -119,21 +143,27 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
                           href={item.href}
                           onClick={onClose}
                           className={cn(
-                            "flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm transition-colors",
+                            "group relative flex items-center gap-2.5 rounded-md pl-3 pr-2.5 py-1.5 text-[13px] transition-all duration-150 ease-out",
                             active
-                              ? "bg-primary/20 text-primary font-medium"
-                              : "text-navy-300 hover:bg-navy-800 hover:text-white"
+                              ? "bg-primary/10 text-white font-medium"
+                              : "text-white/60 hover:bg-white/[0.04] hover:text-white"
                           )}
                         >
+                          {active && (
+                            <span
+                              aria-hidden
+                              className="absolute left-0 top-1.5 bottom-1.5 w-[2px] rounded-full bg-primary"
+                            />
+                          )}
                           {Icon && (
                             <Icon
                               className={cn(
-                                "h-4 w-4 shrink-0",
-                                active ? "text-primary" : "text-navy-400"
+                                "h-4 w-4 shrink-0 transition-colors",
+                                active ? "text-primary" : "text-white/40 group-hover:text-white/70"
                               )}
                             />
                           )}
-                          {item.label}
+                          <span className="truncate">{item.label}</span>
                         </Link>
                       </li>
                     );
@@ -147,26 +177,26 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
 
       {/* User Footer */}
       {profile && (
-        <div className="border-t border-navy-800 p-3">
-          <div className="flex items-center gap-3 rounded-lg px-2 py-2">
-            <Avatar className="h-8 w-8">
+        <div className="relative border-t border-white/[0.06] p-3">
+          <div className="flex items-center gap-2.5 rounded-md px-2 py-1.5 transition-colors hover:bg-white/[0.04]">
+            <Avatar className="h-8 w-8 ring-1 ring-white/10">
               <AvatarImage src={profile.photoURL} />
-              <AvatarFallback className="bg-primary/20 text-primary text-xs">
+              <AvatarFallback className="bg-primary/15 text-primary text-[11px] font-medium">
                 {getInitials(profile.displayName)}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <p className="text-white text-sm font-medium truncate">{profile.displayName}</p>
-              <p className="text-navy-400 text-[11px] truncate">
+              <p className="text-white text-[13px] font-medium leading-tight truncate">{profile.displayName}</p>
+              <p className="text-white/40 text-[10px] truncate tracking-wide">
                 {ROLE_LABELS[profile.role]}
               </p>
             </div>
             <button
               onClick={signOut}
-              className="text-navy-400 hover:text-red-400 transition-colors"
+              className="rounded-md p-1.5 text-white/40 hover:text-red-400 hover:bg-white/[0.04] transition-colors"
               title="Sign out"
             >
-              <LogOut className="h-4 w-4" />
+              <LogOut className="h-3.5 w-3.5" />
             </button>
           </div>
         </div>
