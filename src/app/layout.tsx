@@ -16,9 +16,6 @@ export const metadata: Metadata = {
     template: "%s | SupportMENA OS",
   },
   description: "The operating system for technical service businesses.",
-  icons: {
-    icon: "/images/logo.png",
-  },
 };
 
 export default function RootLayout({
