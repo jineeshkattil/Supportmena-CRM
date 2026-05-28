@@ -51,10 +51,10 @@ export function formatCurrency(
   amount: number | undefined | null,
   currency = "AED"
 ): string {
-  if (amount === undefined || amount === null) return `${currency} 0.00`;
+  if (amount === undefined || amount === null) return `${currency} 0`;
   return `${currency} ${amount.toLocaleString("en-AE", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   })}`;
 }
 
