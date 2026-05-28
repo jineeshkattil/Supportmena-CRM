@@ -82,19 +82,19 @@ export default function QuotationsPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold">Quotations</h2>
           <p className="text-sm text-muted-foreground">{quotations.length} quotations</p>
         </div>
-        <Button asChild>
+        <Button asChild className="w-full sm:w-auto">
           <Link href="/quotations/new">
             <Plus className="h-4 w-4 mr-2" />New Quotation
           </Link>
         </Button>
       </div>
 
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label: "Total Quotations", value: quotations.length.toString(), sub: "All time" },
           { label: "Total Value", value: formatCurrency(totalValue), sub: "All quotations" },

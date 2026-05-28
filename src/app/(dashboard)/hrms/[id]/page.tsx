@@ -128,7 +128,7 @@ export default function EmployeeDetailPage() {
 
   if (loading) {
     return (
-      <div className="max-w-5xl space-y-4">
+      <div className="max-w-5xl mx-auto space-y-4">
         <Skeleton className="h-10 w-72" />
         <Skeleton className="h-40 w-full" />
         <div className="grid grid-cols-2 gap-3">
@@ -144,22 +144,22 @@ export default function EmployeeDetailPage() {
   }
 
   return (
-    <div className="max-w-5xl space-y-4">
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-3">
+    <div className="max-w-5xl mx-auto space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <Button asChild variant="ghost" size="icon">
             <Link href="/hrms">
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
-          <div>
-            <h2 className="text-lg font-semibold">{employee.fullName}</h2>
+          <div className="min-w-0">
+            <h2 className="text-lg font-semibold truncate">{employee.fullName}</h2>
             <p className="text-sm text-muted-foreground font-mono">
               {employee.employeeCode}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button asChild variant="outline" size="sm">
             <Link href={`/hrms/${id}?edit=true`}>
               <Edit className="h-4 w-4 mr-1.5" />

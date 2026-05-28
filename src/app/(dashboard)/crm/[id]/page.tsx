@@ -44,12 +44,12 @@ export default function ClientDetailPage() {
   if (!client) return <p className="text-muted-foreground">Client not found.</p>;
 
   return (
-    <div className="max-w-2xl space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+    <div className="max-w-2xl mx-auto space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <Button asChild variant="ghost" size="icon"><Link href="/crm"><ArrowLeft className="h-4 w-4" /></Link></Button>
-          <div>
-            <h2 className="text-lg font-semibold">{client.companyName}</h2>
+          <div className="min-w-0">
+            <h2 className="text-lg font-semibold truncate">{client.companyName}</h2>
             <p className="text-sm text-muted-foreground">{client.clientCode}</p>
           </div>
         </div>
@@ -61,7 +61,7 @@ export default function ClientDetailPage() {
       <Card>
         <CardHeader><CardTitle className="text-base">Client Information</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Building2 className="h-4 w-4 text-muted-foreground" />
             <span className="font-medium">{client.companyName}</span>
             <Badge variant="secondary" className="capitalize">{client.clientType}</Badge>

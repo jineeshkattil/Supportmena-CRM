@@ -99,14 +99,14 @@ export default function SettingsPage() {
   const isAdmin = profile?.role === "super_admin";
 
   return (
-    <div className="max-w-3xl space-y-4">
+    <div className="max-w-3xl mx-auto space-y-4">
       <div>
         <h2 className="text-lg font-semibold">Settings</h2>
         <p className="text-sm text-muted-foreground">Manage company and system configuration</p>
       </div>
 
       <Tabs defaultValue="company">
-        <TabsList>
+        <TabsList className="flex w-full overflow-x-auto sm:w-auto sm:inline-flex">
           <TabsTrigger value="company"><Building2 className="h-4 w-4 mr-1.5" />Company</TabsTrigger>
           <TabsTrigger value="users"><Users className="h-4 w-4 mr-1.5" />Users</TabsTrigger>
           <TabsTrigger value="billing"><Tag className="h-4 w-4 mr-1.5" />Billing Config</TabsTrigger>

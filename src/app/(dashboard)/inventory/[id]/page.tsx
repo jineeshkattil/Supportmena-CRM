@@ -73,7 +73,7 @@ export default function InventoryDetailPage() {
 
   if (loading) {
     return (
-      <div className="max-w-5xl space-y-4">
+      <div className="max-w-5xl mx-auto space-y-4">
         <Skeleton className="h-10 w-72" />
         <div className="grid grid-cols-3 gap-3">
           <Skeleton className="h-48" />
@@ -98,22 +98,22 @@ export default function InventoryDetailPage() {
   const stockValue = item.currentStock * item.unitCost;
 
   return (
-    <div className="max-w-5xl space-y-4">
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-3">
+    <div className="max-w-5xl mx-auto space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <Button asChild variant="ghost" size="icon">
             <Link href="/inventory">
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
-          <div>
-            <h2 className="text-lg font-semibold">{item.itemName}</h2>
+          <div className="min-w-0">
+            <h2 className="text-lg font-semibold truncate">{item.itemName}</h2>
             <p className="text-sm text-muted-foreground font-mono">
               {item.itemCode}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button asChild variant="outline" size="sm">
             <Link href={`/inventory/${id}?edit=true`}>
               <Edit className="h-4 w-4 mr-1.5" />

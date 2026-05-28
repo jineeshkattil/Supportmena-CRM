@@ -83,7 +83,7 @@ export default function NewEmployeePage() {
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Tabs defaultValue="personal">
-          <TabsList className="mb-4">
+          <TabsList className="mb-4 flex w-full overflow-x-auto sm:w-auto sm:inline-flex">
             <TabsTrigger value="personal">Personal</TabsTrigger>
             <TabsTrigger value="employment">Employment</TabsTrigger>
             <TabsTrigger value="documents">Documents</TabsTrigger>

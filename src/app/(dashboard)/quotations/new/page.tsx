@@ -489,7 +489,7 @@ export default function NewQuotationPage() {
 
           {/* Sticky Summary Panel */}
           <div className="lg:col-span-1">
-            <div className="sticky top-4 space-y-4">
+            <div className="lg:sticky lg:top-4 space-y-4">
               <Card className="border-primary/20">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base text-primary">Quotation Summary</CardTitle>

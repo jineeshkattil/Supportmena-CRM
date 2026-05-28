@@ -148,16 +148,16 @@ export default function QuotationDetailPage() {
     QUOTATION_STATUSES[0];
 
   return (
-    <div className="max-w-5xl space-y-4">
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-3">
+    <div className="max-w-5xl mx-auto space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <Button asChild variant="ghost" size="icon">
             <Link href="/quotations">
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
-          <div>
-            <div className="flex items-center gap-2">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
               <h2 className="text-lg font-semibold font-mono">
                 {quotation.quotationNumber}
               </h2>
