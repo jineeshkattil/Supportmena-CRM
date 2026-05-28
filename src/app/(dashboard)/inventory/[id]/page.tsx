@@ -152,7 +152,7 @@ export default function InventoryDetailPage() {
             </div>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
-            <div className="grid grid-cols-2 gap-x-6 gap-y-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
               {item.brand && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Brand</span>
@@ -220,7 +220,7 @@ export default function InventoryDetailPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="rounded-lg border p-3 bg-card">
                 <p className="text-xs text-muted-foreground">Current Stock</p>
                 <p className="text-xl font-bold">{item.currentStock}</p>

@@ -206,7 +206,7 @@ export default function LoginPage() {
               powerful platform built for modern teams.
             </p>
 
-            <div className="grid grid-cols-3 gap-4 pt-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6">
               {[
                 { label: "Modules", value: "17+" },
                 { label: "Faster ops", value: "3×" },

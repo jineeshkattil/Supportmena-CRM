@@ -80,8 +80,64 @@ export function DataTable<TData, TValue>({
         </div>
       )}
 
-      {/* Table */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
+      {/* Mobile card view */}
+      <div className="md:hidden space-y-2">
+        {loading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="rounded-xl border border-border bg-card p-4 space-y-2">
+              <div className="h-4 bg-muted rounded animate-pulse w-2/3" />
+              <div className="h-3 bg-muted rounded animate-pulse w-1/2" />
+              <div className="h-3 bg-muted rounded animate-pulse w-3/4" />
+            </div>
+          ))
+        ) : table.getRowModel().rows.length === 0 ? (
+          <div className="rounded-xl border border-border bg-card py-14 px-4">
+            <div className="flex flex-col items-center gap-2 text-muted-foreground">
+              {emptyIcon}
+              <p className="text-sm">{emptyMessage}</p>
+            </div>
+          </div>
+        ) : (
+          table.getRowModel().rows.map((row) => {
+            const cells = row.getVisibleCells();
+            return (
+              <div
+                key={row.id}
+                className="rounded-xl border border-border bg-card p-3.5 space-y-2.5 active:bg-muted/40 transition-colors"
+              >
+                {cells.map((cell) => {
+                  const header = cell.column.columnDef.header;
+                  const headerText =
+                    typeof header === "string" ? header : "";
+                  const isActions = cell.column.id === "actions";
+                  if (isActions) {
+                    return (
+                      <div key={cell.id} className="pt-1.5 border-t border-border/60 flex items-center justify-end -mx-1">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </div>
+                    );
+                  }
+                  return (
+                    <div key={cell.id} className="flex items-start justify-between gap-3 text-[13px]">
+                      {headerText && (
+                        <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mt-0.5 shrink-0">
+                          {headerText}
+                        </span>
+                      )}
+                      <div className={cn("text-right min-w-0", !headerText && "w-full text-left")}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Table (tablet & up) */}
+      <div className="hidden md:block rounded-xl border border-border bg-card overflow-hidden">
         <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-muted/30">

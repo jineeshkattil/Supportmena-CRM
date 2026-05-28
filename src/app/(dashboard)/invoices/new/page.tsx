@@ -132,7 +132,7 @@ export default function NewInvoicePage() {
         <Card>
           <CardHeader><CardTitle className="text-base">Invoice Details</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2 col-span-2">
                 <Label>Client *</Label>
                 <Select onValueChange={(v) => setValue("clientId", v)}>
@@ -179,7 +179,7 @@ export default function NewInvoicePage() {
           </CardHeader>
           <CardContent className="space-y-3">
             {lineItems.map((item) => (
-              <div key={item.id} className="grid grid-cols-12 gap-2 items-start">
+              <div key={item.id} className="grid grid-cols-12 gap-1.5 sm:gap-2 items-start">
                 <div className="col-span-5">
                   <Input placeholder="Item / Service description" value={item.itemName} onChange={(e) => updateLine(item.id, "itemName", e.target.value)} className="text-sm" />
                 </div>

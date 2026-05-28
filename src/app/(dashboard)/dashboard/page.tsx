@@ -151,7 +151,7 @@ export default function DashboardPage() {
       {/* Financial KPIs */}
       <div>
         <SectionTitle>Financial Overview</SectionTitle>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <KPICard
             title="Monthly Revenue"
             value={stats ? formatCurrency(stats.monthlyRevenue) : "—"}
@@ -197,7 +197,7 @@ export default function DashboardPage() {
       {/* Operational KPIs */}
       <div>
         <SectionTitle>Operations</SectionTitle>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <KPICard
             title="Low Stock Items"
             value={stats?.lowStockItems ?? "—"}

@@ -106,7 +106,7 @@ export default function InvoiceDetailPage() {
     return (
       <div className="max-w-5xl space-y-4">
         <Skeleton className="h-10 w-72" />
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <Skeleton className="h-20" />
           <Skeleton className="h-20" />
           <Skeleton className="h-20" />
@@ -157,7 +157,7 @@ export default function InvoiceDetailPage() {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {!isPaid && (
             <Button size="sm" className="bg-green-600 hover:bg-green-700">
               <CheckCircle2 className="h-4 w-4 mr-1.5" />

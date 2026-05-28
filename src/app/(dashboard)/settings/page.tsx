@@ -120,7 +120,7 @@ export default function SettingsPage() {
                 <CardDescription>Basic details shown on invoices and quotations</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2 col-span-2">
                     <Label>Company Name</Label>
                     <Input {...register("name")} />
@@ -155,7 +155,7 @@ export default function SettingsPage() {
                 <CardTitle className="text-base">Financial Settings</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Currency</Label>
                     <Input {...register("currency")} />
@@ -222,7 +222,7 @@ export default function SettingsPage() {
                 <CardDescription>Configure prefixes for auto-generated numbers</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label>Invoice Prefix</Label>
                     <Input {...register("invoicePrefix")} />

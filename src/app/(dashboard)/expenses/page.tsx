@@ -86,7 +86,7 @@ export default function ExpensesPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {[
           { label: "Total Expenses", value: formatCurrency(totalExpenses) },
           { label: "Pending Approval", value: expenses.filter((e) => e.status === "pending").length.toString() },

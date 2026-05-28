@@ -92,7 +92,7 @@ export default function TasksPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         {TASK_STATUSES.slice(0, 5).map((s) => (
           <div key={s.value} className="rounded-xl border p-3 bg-card">
             <p className="text-xs text-muted-foreground">{s.label}</p>

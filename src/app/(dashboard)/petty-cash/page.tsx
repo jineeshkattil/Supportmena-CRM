@@ -91,7 +91,7 @@ export default function PettyCashPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {[
           { label: "Total Given", value: formatCurrency(totalGiven), color: "text-blue-600" },
           { label: "Total Spent", value: formatCurrency(totalSpent), color: "text-orange-600" },

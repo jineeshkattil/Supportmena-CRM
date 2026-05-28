@@ -102,7 +102,7 @@ export default function AttendancePage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           { label: "Present", value: presentCount, icon: CheckCircle, color: "text-green-600 bg-green-50" },
           { label: "Absent", value: absentCount, icon: XCircle, color: "text-red-600 bg-red-50" },

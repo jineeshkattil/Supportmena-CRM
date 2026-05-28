@@ -114,7 +114,7 @@ export default function AMCPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           { label: "Active Contracts", value: contracts.filter((c) => c.status === "active").length.toString() },
           { label: "Total Value", value: formatCurrency(totalValue) },

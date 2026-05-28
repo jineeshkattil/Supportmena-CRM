@@ -172,7 +172,7 @@ export default function QuotationDetailPage() {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button asChild variant="outline" size="sm">
             <Link href={`/quotations/${id}?edit=true`}>
               <Edit className="h-4 w-4 mr-1.5" />

@@ -137,7 +137,7 @@ export default function LeavePage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           { label: "Pending", value: requests.filter((r) => r.status === "pending").length, icon: Clock, color: "text-yellow-600" },
           { label: "Approved", value: requests.filter((r) => r.status === "approved").length, icon: CheckCircle, color: "text-green-600" },

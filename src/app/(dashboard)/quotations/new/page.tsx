@@ -324,7 +324,7 @@ export default function NewQuotationPage() {
                   const stockWarning = item.availableStock !== undefined && item.quantity > item.availableStock;
                   return (
                     <div key={item.id} className="space-y-2">
-                      <div className="grid grid-cols-12 gap-2 items-start">
+                      <div className="grid grid-cols-12 gap-1.5 sm:gap-2 items-start">
                         <div className="col-span-4">
                           <Input
                             placeholder="Item name"

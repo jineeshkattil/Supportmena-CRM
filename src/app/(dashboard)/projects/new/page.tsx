@@ -105,7 +105,7 @@ export default function NewProjectPage() {
               <Input placeholder="CCTV Installation - Client Name HQ" {...register("projectName")} />
               {errors.projectName && <p className="text-xs text-destructive">{errors.projectName.message}</p>}
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Project Type *</Label>
                 <Select defaultValue="cctv" onValueChange={(v) => setValue("projectType", v)}>
@@ -138,7 +138,7 @@ export default function NewProjectPage() {
               <Label>Contact Person on Site</Label>
               <Input placeholder="Name and phone" {...register("contactPerson")} />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Start Date</Label>
                 <Input type="date" {...register("startDate")} />
