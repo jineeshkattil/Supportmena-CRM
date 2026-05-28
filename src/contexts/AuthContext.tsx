@@ -35,31 +35,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const safetyTimeout = setTimeout(() => setLoading(false), 4000);
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      clearTimeout(safetyTimeout);
       setUser(firebaseUser);
-      if (firebaseUser) {
-        const profileDoc = await getDoc(doc(db, "users", firebaseUser.uid));
-        if (profileDoc.exists()) {
-          setProfile({ id: profileDoc.id, ...profileDoc.data() } as UserProfile);
+      try {
+        if (firebaseUser) {
+          const profileDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+          if (profileDoc.exists()) {
+            setProfile({ id: profileDoc.id, ...profileDoc.data() } as UserProfile);
+          } else {
+            const newProfile: Omit<UserProfile, "id"> = {
+              email: firebaseUser.email!,
+              displayName: firebaseUser.displayName || firebaseUser.email!,
+              role: "sales",
+              isActive: true,
+              createdAt: serverTimestamp() as never,
+              updatedAt: serverTimestamp() as never,
+            };
+            await setDoc(doc(db, "users", firebaseUser.uid), newProfile);
+            setProfile({ id: firebaseUser.uid, ...newProfile } as UserProfile);
+          }
         } else {
-          // Create default profile for first-time sign-in
-          const newProfile: Omit<UserProfile, "id"> = {
-            email: firebaseUser.email!,
-            displayName: firebaseUser.displayName || firebaseUser.email!,
-            role: "sales",
-            isActive: true,
-            createdAt: serverTimestamp() as never,
-            updatedAt: serverTimestamp() as never,
-          };
-          await setDoc(doc(db, "users", firebaseUser.uid), newProfile);
-          setProfile({ id: firebaseUser.uid, ...newProfile } as UserProfile);
+          setProfile(null);
         }
-      } else {
+      } catch (err) {
+        console.error("Auth profile load failed:", err);
         setProfile(null);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
-    return unsubscribe;
+    return () => {
+      clearTimeout(safetyTimeout);
+      unsubscribe();
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {
