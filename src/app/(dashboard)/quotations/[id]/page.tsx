@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatCurrencyExact, formatDate } from "@/lib/utils";
 import { QUOTATION_STATUSES } from "@/lib/constants";
 
 const DEMO: Quotation = {
@@ -375,28 +375,28 @@ export default function QuotationDetailPage() {
           <CardContent className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Subtotal</span>
-              <span>{formatCurrency(quotation.subtotal)}</span>
+              <span>{formatCurrencyExact(quotation.subtotal)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Materials</span>
-              <span>{formatCurrency(quotation.materialTotal)}</span>
+              <span>{formatCurrencyExact(quotation.materialTotal)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Resources</span>
-              <span>{formatCurrency(quotation.resourceCostTotal)}</span>
+              <span>{formatCurrencyExact(quotation.resourceCostTotal)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Discount</span>
-              <span>- {formatCurrency(quotation.discount)}</span>
+              <span>- {formatCurrencyExact(quotation.discount)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">VAT (5%)</span>
-              <span>{formatCurrency(quotation.vatAmount)}</span>
+              <span>{formatCurrencyExact(quotation.vatAmount)}</span>
             </div>
             <Separator />
             <div className="flex justify-between font-semibold text-base">
               <span>Grand Total</span>
-              <span>{formatCurrency(quotation.grandTotal)}</span>
+              <span>{formatCurrencyExact(quotation.grandTotal)}</span>
             </div>
             {quotation.estimatedProfit !== undefined && (
               <div className="mt-2 rounded-lg bg-green-50 p-2 border border-green-100">

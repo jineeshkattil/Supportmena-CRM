@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatCurrencyExact, formatDate } from "@/lib/utils";
 import { INVOICE_STATUSES } from "@/lib/constants";
 
 const DEMO: Invoice = {
@@ -336,31 +336,31 @@ export default function InvoiceDetailPage() {
           <CardContent className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Subtotal</span>
-              <span>{formatCurrency(invoice.subtotal)}</span>
+              <span>{formatCurrencyExact(invoice.subtotal)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Discount</span>
-              <span>- {formatCurrency(invoice.discount)}</span>
+              <span>- {formatCurrencyExact(invoice.discount)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">VAT</span>
-              <span>{formatCurrency(invoice.vatAmount)}</span>
+              <span>{formatCurrencyExact(invoice.vatAmount)}</span>
             </div>
             <Separator />
             <div className="flex justify-between font-semibold text-base">
               <span>Grand Total</span>
-              <span>{formatCurrency(invoice.grandTotal)}</span>
+              <span>{formatCurrencyExact(invoice.grandTotal)}</span>
             </div>
             <div className="flex justify-between text-green-600">
               <span>Paid</span>
-              <span>{formatCurrency(invoice.paidAmount)}</span>
+              <span>{formatCurrencyExact(invoice.paidAmount)}</span>
             </div>
             <Separator />
             <div
               className={`flex justify-between font-semibold ${invoice.balanceAmount > 0 ? "text-red-600" : "text-green-600"}`}
             >
               <span>Balance Due</span>
-              <span>{formatCurrency(invoice.balanceAmount)}</span>
+              <span>{formatCurrencyExact(invoice.balanceAmount)}</span>
             </div>
           </CardContent>
         </Card>

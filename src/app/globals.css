@@ -100,7 +100,8 @@
 
   /* Smooth focus rings */
   :focus-visible {
-    outline: none;
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
   }
 }
 

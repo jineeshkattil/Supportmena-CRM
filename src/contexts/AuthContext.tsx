@@ -17,6 +17,7 @@ import {
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 import { UserProfile } from "@/types";
+import { toast } from "sonner";
 
 interface AuthContextType {
   user: User | null;
@@ -62,6 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } catch (err) {
         console.error("Auth profile load failed:", err);
         setProfile(null);
+        toast.error("Could not load your profile. Some features may be limited.");
       } finally {
         setLoading(false);
       }

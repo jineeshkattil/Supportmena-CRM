@@ -8,6 +8,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { ArrowLeft, Plus, Trash2, Loader2, Package, User } from "lucide-react";
 import { addDoc, collection, serverTimestamp, getDocs, query, orderBy } from "firebase/firestore";
+import { getNextSequence } from "@/services/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Client, InventoryItem } from "@/types";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatCurrencyExact } from "@/lib/utils";
 import { DEFAULT_VAT, RESOURCE_TYPES } from "@/lib/constants";
 import Link from "next/link";
 import { format } from "date-fns";
@@ -171,8 +172,8 @@ export default function NewQuotationPage() {
   const materialCostTotal = lineItems.reduce((sum, item) => sum + item.quantity * item.costPrice, 0);
   const resourceCostTotal = resourceItems.reduce((sum, r) => sum + r.quantity * r.unitCost, 0);
   const totalCost = materialCostTotal + resourceCostTotal;
-  const grossProfit = grandTotal - totalCost;
-  const marginPct = grandTotal > 0 ? (grossProfit / grandTotal) * 100 : 0;
+  const grossProfit = afterDiscount - totalCost;
+  const marginPct = afterDiscount > 0 ? (grossProfit / afterDiscount) * 100 : 0;
 
   const onSubmit = async (data: FormData) => {
     const clientName = clients.find((c) => c.id === data.clientId)?.companyName || "";
@@ -180,16 +181,16 @@ export default function NewQuotationPage() {
 
     setSaving(true);
     try {
-      const counter = Math.floor(Math.random() * 9000) + 1000;
+      const counter = await getNextSequence("quotations");
       await addDoc(collection(db, "quotations"), {
-        quotationNumber: `QT-${counter}`,
+        quotationNumber: `QT-${String(counter).padStart(4, "0")}`,
         clientId: data.clientId,
         clientName,
         quotationDate: data.quotationDate,
         validUntil: data.validUntil,
         items: lineItems.map((i) => ({
           id: i.id, itemType: i.inventoryItemId ? "inventory" : "custom",
-          inventoryItemId: i.inventoryItemId, itemName: i.itemName,
+          inventoryItemId: i.inventoryItemId ?? null, itemName: i.itemName,
           description: i.description, quantity: i.quantity, unitPrice: i.unitPrice,
           costPrice: i.costPrice, discount: i.discount, vatPercentage: i.vatPct,
           total: i.quantity * i.unitPrice * (1 - i.discount / 100),
@@ -201,7 +202,7 @@ export default function NewQuotationPage() {
         })),
         subtotal,
         materialTotal: materialSubtotal,
-        resourceCostTotal: resourceSubtotal,
+        resourceCostTotal: resourceItems.reduce((sum, r) => sum + r.quantity * r.unitCost, 0),
         discount: discountAmount,
         vatAmount,
         grandTotal,

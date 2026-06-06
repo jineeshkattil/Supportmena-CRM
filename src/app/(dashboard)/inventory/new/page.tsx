@@ -8,6 +8,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { addDoc, collection, getDocs, orderBy, query, where, serverTimestamp } from "firebase/firestore";
+import { getNextSequence } from "@/services/firestore";
 import { db } from "@/lib/firebase";
 import { Supplier } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -77,13 +78,13 @@ export default function NewInventoryItemPage() {
   const onSubmit = async (data: FormData) => {
     setSaving(true);
     try {
-      const num = Math.floor(Math.random() * 9000) + 1000;
+      const num = await getNextSequence("inventory");
       const supplier = suppliers.find((s) => s.id === data.supplierId);
       await addDoc(collection(db, "inventory"), {
         ...data,
         supplierId: data.supplierId || null,
         supplierName: supplier?.companyName || null,
-        itemCode: `INV-${num}`,
+        itemCode: `INV-${String(num).padStart(4, "0")}`,
         reservedStock: 0,
         availableStock: data.currentStock,
         status: "active",

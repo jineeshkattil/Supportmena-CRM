@@ -8,6 +8,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { ArrowLeft, Plus, Trash2, Loader2 } from "lucide-react";
 import { addDoc, collection, serverTimestamp, getDocs, query, orderBy } from "firebase/firestore";
+import { getNextSequence } from "@/services/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Client } from "@/types";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatCurrencyExact } from "@/lib/utils";
 import { DEFAULT_VAT } from "@/lib/constants";
 import Link from "next/link";
 import { format } from "date-fns";
@@ -83,9 +84,9 @@ export default function NewInvoicePage() {
     const clientName = clients.find((c) => c.id === data.clientId)?.companyName || "";
     setSaving(true);
     try {
-      const num = Math.floor(Math.random() * 9000) + 1000;
+      const num = await getNextSequence("invoices");
       await addDoc(collection(db, "invoices"), {
-        invoiceNumber: `INV-${num}`,
+        invoiceNumber: `INV-${String(num).padStart(4, "0")}`,
         clientId: data.clientId,
         clientName,
         invoiceDate: data.invoiceDate,
@@ -202,13 +203,13 @@ export default function NewInvoicePage() {
             <Separator />
             <div className="space-y-1 text-sm">
               <div className="flex justify-between text-muted-foreground">
-                <span>Subtotal</span><span>{formatCurrency(subtotal)}</span>
+                <span>Subtotal</span><span>{formatCurrencyExact(subtotal)}</span>
               </div>
               <div className="flex justify-between text-muted-foreground">
-                <span>VAT ({DEFAULT_VAT}%)</span><span>{formatCurrency(vatAmount)}</span>
+                <span>VAT ({DEFAULT_VAT}%)</span><span>{formatCurrencyExact(vatAmount)}</span>
               </div>
               <div className="flex justify-between font-bold text-base">
-                <span>Grand Total</span><span className="text-primary">{formatCurrency(grandTotal)}</span>
+                <span>Grand Total</span><span className="text-primary">{formatCurrencyExact(grandTotal)}</span>
               </div>
             </div>
           </CardContent>

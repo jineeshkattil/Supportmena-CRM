@@ -81,6 +81,14 @@ export function UserAccessDialog({ user, open, onOpenChange, onSaved }: Props) {
 
   const save = async () => {
     if (!user) return;
+    if (!user.id || user.id.startsWith("__demo__")) {
+      toast.error("Cannot update a demo user — connect to Firestore first.");
+      return;
+    }
+    if (!usingDefaults && permissions.length === 0) {
+      toast.error("Cannot save — no pages selected. Use 'Role default' to restore access.");
+      return;
+    }
     setSaving(true);
     try {
       await updateDoc(doc(db, "users", user.id), {

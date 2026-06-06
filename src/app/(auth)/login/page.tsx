@@ -19,13 +19,32 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-  const { signIn } = useAuth();
+  const { signIn, resetPassword } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [forgotLoading, setForgotLoading] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
   });
+
+  const email = watch("email");
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      toast.error("Enter your email above first");
+      return;
+    }
+    setForgotLoading(true);
+    try {
+      await resetPassword(email);
+      toast.success("Password reset email sent");
+    } catch {
+      toast.error("Could not send reset email");
+    } finally {
+      setForgotLoading(false);
+    }
+  };
 
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
@@ -95,9 +114,11 @@ export default function LoginPage() {
                 </Label>
                 <button
                   type="button"
-                  className="text-[11px] text-primary hover:text-primary/80 transition-colors font-medium"
+                  className="text-[11px] text-primary hover:text-primary/80 transition-colors font-medium disabled:opacity-50"
+                  onClick={handleForgotPassword}
+                  disabled={forgotLoading}
                 >
-                  Forgot?
+                  {forgotLoading ? "Sending..." : "Forgot?"}
                 </button>
               </div>
               <div className="relative">

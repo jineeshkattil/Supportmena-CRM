@@ -73,9 +73,9 @@ export default function SettingsPage() {
         setUsers(snap.docs.map((d) => ({ id: d.id, ...d.data() }) as UserProfile));
       } catch {
         setUsers([
-          { id: "1", email: "admin@supportmena.com", displayName: "Super Admin", role: "super_admin", isActive: true, createdAt: null as never, updatedAt: null as never },
-          { id: "2", email: "finance@supportmena.com", displayName: "Finance Manager", role: "finance", isActive: true, createdAt: null as never, updatedAt: null as never },
-          { id: "3", email: "hr@supportmena.com", displayName: "HR Manager", role: "hr_admin", isActive: true, createdAt: null as never, updatedAt: null as never },
+          { id: "__demo__-1", email: "admin@supportmena.com", displayName: "Super Admin", role: "super_admin", isActive: true, createdAt: null as never, updatedAt: null as never },
+          { id: "__demo__-2", email: "finance@supportmena.com", displayName: "Finance Manager", role: "finance", isActive: true, createdAt: null as never, updatedAt: null as never },
+          { id: "__demo__-3", email: "hr@supportmena.com", displayName: "HR Manager", role: "hr_admin", isActive: true, createdAt: null as never, updatedAt: null as never },
         ]);
       } finally {
         setLoadingUsers(false);

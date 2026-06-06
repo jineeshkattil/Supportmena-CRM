@@ -58,6 +58,17 @@ export function formatCurrency(
   })}`;
 }
 
+export function formatCurrencyExact(
+  amount: number | undefined | null,
+  currency = "AED"
+): string {
+  if (amount === undefined || amount === null) return `${currency} 0.00`;
+  return `${currency} ${amount.toLocaleString("en-AE", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+}
+
 export function formatNumber(num: number | undefined | null): string {
   if (num === undefined || num === null) return "0";
   return num.toLocaleString("en-AE");
