@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="faceDark" x1="0" y1="0" x2="0" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1E3A8A"/>
+      <stop offset="1" stop-color="#0F1E4D"/>
+    </linearGradient>
+    <linearGradient id="faceMid" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2E4FA7"/>
+      <stop offset="1" stop-color="#16306E"/>
+    </linearGradient>
+    <linearGradient id="faceLight" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4F7BD8"/>
+      <stop offset="1" stop-color="#2C4FA8"/>
+    </linearGradient>
+  </defs>
+  <!-- hex outline / base -->
+  <path d="M32 3 L58 18 V46 L32 61 L6 46 V18 Z" fill="url(#faceMid)"/>
+  <!-- faceted shading: lighter top-left & bottom-right -->
+  <path d="M32 3 L58 18 L32 32 Z" fill="url(#faceLight)"/>
+  <path d="M32 61 L6 46 L32 32 Z" fill="url(#faceLight)" opacity="0.85"/>
+  <path d="M58 18 V46 L32 32 Z" fill="url(#faceDark)" opacity="0.7"/>
+  <path d="M6 18 V46 L32 32 Z" fill="url(#faceDark)" opacity="0.55"/>
+  <!-- inner panel for the S -->
+  <path d="M32 11 L50 21 V43 L32 53 L14 43 V21 Z" fill="url(#faceMid)" opacity="0.6"/>
+  <!-- stylized S -->
+  <path d="M44 23 C44 19.5 40 17 33 17 C25 17 21 20 21 25 C21 29.5 25 31 32 32 C39 33 43 35 43 39.5 C43 44.5 39 47 31 47 C24 47 20 44.5 20 41"
+        stroke="white" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

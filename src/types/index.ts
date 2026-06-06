@@ -20,6 +20,10 @@ export interface UserProfile {
   role: UserRole;
   employeeId?: string;
   isActive: boolean;
+  // Optional explicit allow-list of module ids the user can access. When
+  // present (even as an empty array), this overrides the role-based defaults
+  // in canViewModule. When null/undefined, the role's defaults apply.
+  pagePermissions?: string[] | null;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }

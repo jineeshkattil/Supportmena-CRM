@@ -75,10 +75,10 @@ export default function InventoryPage() {
     { id: "stockStatus", header: "Status", cell: ({ row }) => getStockBadge(row.original) },
     { id: "actions", header: "", cell: ({ row }) => (
       <div className="flex items-center gap-1">
-        <Button asChild variant="ghost" size="icon" className="h-7 w-7">
+        <Button asChild variant="ghost" size="icon" className="h-9 w-9 sm:h-7 sm:w-7">
           <Link href={`/inventory/${row.original.id}`}><Eye className="h-3.5 w-3.5" /></Link>
         </Button>
-        <Button asChild variant="ghost" size="icon" className="h-7 w-7">
+        <Button asChild variant="ghost" size="icon" className="h-9 w-9 sm:h-7 sm:w-7">
           <Link href={`/inventory/${row.original.id}?edit=true`}><Pencil className="h-3.5 w-3.5" /></Link>
         </Button>
       </div>
@@ -91,19 +91,19 @@ export default function InventoryPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold">Inventory</h2>
           <p className="text-sm text-muted-foreground">{items.length} items in stock</p>
         </div>
-        <Button asChild>
+        <Button asChild className="w-full sm:w-auto">
           <Link href="/inventory/new">
             <Plus className="h-4 w-4 mr-2" />Add Item
           </Link>
         </Button>
       </div>
 
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label: "Total Items", value: items.length.toString() },
           { label: "Inventory Value", value: formatCurrency(totalValue) },
