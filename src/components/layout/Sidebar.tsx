@@ -7,6 +7,7 @@ import {
   CheckSquare, RefreshCw, Package, ShoppingCart, Truck,
   UserCircle, Clock, CalendarDays, Wallet, CreditCard,
   BarChart2, Settings, LogOut, Search,
+  Bell, Building2, Globe, Wrench, FileSearch, FileUp, PieChart, SlidersHorizontal,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -21,6 +22,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   CheckSquare, RefreshCw, Package, ShoppingCart, Truck,
   UserCircle, Clock, CalendarDays, Wallet, CreditCard,
   BarChart2, Settings,
+  Bell, Building2, Globe, Wrench, FileSearch, FileUp, PieChart, SlidersHorizontal,
 };
 
 const NAV_SECTIONS = [
@@ -69,6 +71,20 @@ const NAV_SECTIONS = [
     items: [
       { href: "/reports", label: "Reports", icon: "BarChart2", module: "reports" },
       { href: "/settings", label: "Settings", icon: "Settings", module: "settings" },
+    ],
+  },
+  {
+    title: "Renewal Reminders",
+    items: [
+      { href: "/renewals", label: "Dashboard", icon: "Bell", module: "renewals" },
+      { href: "/renewals/clients", label: "Clients", icon: "Building2", module: "renewal_clients" },
+      { href: "/renewals/providers", label: "Providers", icon: "Globe", module: "renewal_providers" },
+      { href: "/renewals/services", label: "Services", icon: "Wrench", module: "renewal_services" },
+      { href: "/renewals/reminders", label: "Reminders", icon: "Bell", module: "renewal_reminders" },
+      { href: "/renewals/documents", label: "Documents", icon: "FileUp", module: "renewal_documents" },
+      { href: "/renewals/reports", label: "Reports", icon: "PieChart", module: "renewal_reports" },
+      { href: "/renewals/audit", label: "Audit Logs", icon: "FileSearch", module: "renewals" },
+      { href: "/renewals/settings", label: "Settings", icon: "SlidersHorizontal", module: "renewal_settings" },
     ],
   },
 ];
