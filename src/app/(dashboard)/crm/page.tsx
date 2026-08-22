@@ -110,12 +110,12 @@ export default function CRMPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold">CRM / Clients</h2>
           <p className="text-sm text-muted-foreground">{clients.length} clients in your database</p>
         </div>
-        <Button asChild>
+        <Button asChild className="w-full sm:w-auto">
           <Link href="/crm/new">
             <Plus className="h-4 w-4 mr-2" />New Client
           </Link>
@@ -123,7 +123,7 @@ export default function CRMPage() {
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {[
           { label: "Total Clients", value: clients.length, color: "text-blue-600", bg: "bg-blue-50" },
           { label: "Active", value: clients.filter((c) => c.status === "active").length, color: "text-green-600", bg: "bg-green-50" },

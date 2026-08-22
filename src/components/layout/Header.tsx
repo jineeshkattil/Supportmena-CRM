@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { Bell, Search, Menu, Plus, X } from "lucide-react";
+import { Bell, Search, Menu, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +21,7 @@ import { ROLE_LABELS } from "@/lib/permissions";
 import { collection, query, where, orderBy, limit, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Notification } from "@/types";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 const MODULE_TITLES: Record<string, string> = {
@@ -49,8 +50,17 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  const moduleKey = pathname.split("/")[1] || "dashboard";
-  const pageTitle = MODULE_TITLES[moduleKey] || "SupportMENA OS";
+  const segments = pathname.split("/").filter(Boolean);
+  const moduleKey = segments[0] || "dashboard";
+  const moduleTitle = MODULE_TITLES[moduleKey] || "SupportMENA OS";
+  const subSegment = segments[1];
+  const subTitle = subSegment
+    ? subSegment === "new"
+      ? "New"
+      : subSegment.length > 16
+      ? "Details"
+      : subSegment.charAt(0).toUpperCase() + subSegment.slice(1)
+    : null;
 
   useEffect(() => {
     if (!profile) return;
@@ -69,62 +79,89 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
   }, [profile]);
 
   return (
-    <header className="h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center px-4 gap-4">
+    <header className="sticky top-0 z-30 h-14 border-b border-border bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/70 flex items-center px-4 lg:px-6 gap-3">
       <button
         onClick={onMenuClick}
-        className="lg:hidden text-muted-foreground hover:text-foreground"
+        className="lg:hidden -ml-1 rounded-md p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
       >
         <Menu className="h-5 w-5" />
       </button>
 
-      <div className="flex-1">
-        <h1 className="font-semibold text-base text-foreground">{pageTitle}</h1>
+      {/* Breadcrumb-style title */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5 text-sm">
+          <Link
+            href={`/${moduleKey}`}
+            className={cn(
+              "font-medium tracking-tight transition-colors truncate",
+              subTitle
+                ? "text-muted-foreground hover:text-foreground"
+                : "text-foreground"
+            )}
+          >
+            {moduleTitle}
+          </Link>
+          {subTitle && (
+            <>
+              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+              <span className="font-medium text-foreground tracking-tight truncate">
+                {subTitle}
+              </span>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Search */}
-      <div className="hidden md:flex items-center relative w-64">
-        <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
+      <div className="hidden md:flex items-center relative w-72">
+        <Search className="absolute left-2.5 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
         <Input
-          placeholder="Search..."
-          className="pl-8 h-8 bg-muted/50 border-0 text-sm"
+          data-global-search
+          placeholder="Search anything..."
+          className="pl-8 pr-14 h-8 bg-muted/40 border-border/60 text-[13px] hover:bg-muted/60"
         />
+        <kbd className="absolute right-2 inline-flex items-center rounded border border-border bg-background px-1.5 h-5 text-[10px] font-medium text-muted-foreground tracking-wider pointer-events-none">
+          ⌘K
+        </kbd>
       </div>
 
       {/* Notifications */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="relative">
+          <Button variant="ghost" size="icon" className="relative h-9 w-9">
             <Bell className="h-4 w-4" />
             {unreadCount > 0 && (
-              <Badge className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px]">
-                {unreadCount > 9 ? "9+" : unreadCount}
-              </Badge>
+              <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary ring-2 ring-background" />
+              </span>
             )}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-80">
           <DropdownMenuLabel className="flex items-center justify-between">
-            Notifications
+            <span className="text-sm font-semibold">Notifications</span>
             {unreadCount > 0 && (
-              <Badge variant="secondary" className="text-xs">{unreadCount} new</Badge>
+              <Badge variant="info" className="text-[10px]">{unreadCount} new</Badge>
             )}
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           {notifications.length === 0 ? (
-            <div className="p-4 text-center text-sm text-muted-foreground">
-              No notifications
+            <div className="p-6 text-center">
+              <Bell className="h-6 w-6 mx-auto mb-2 text-muted-foreground/40" />
+              <p className="text-sm text-muted-foreground">No notifications</p>
             </div>
           ) : (
             notifications.slice(0, 5).map((n) => (
-              <DropdownMenuItem key={n.id} className="flex flex-col items-start gap-1 py-2">
+              <DropdownMenuItem key={n.id} className="flex flex-col items-start gap-1 py-2.5">
                 <div className="flex items-start gap-2 w-full">
                   {!n.isRead && (
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
                   )}
                   <div className={!n.isRead ? "" : "pl-3.5"}>
-                    <p className="text-sm font-medium">{n.title}</p>
-                    <p className="text-xs text-muted-foreground">{n.message}</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                    <p className="text-sm font-medium leading-tight">{n.title}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{n.message}</p>
+                    <p className="text-[11px] text-muted-foreground/70 mt-1">
                       {timeAgo(n.createdAt)}
                     </p>
                   </div>
@@ -135,7 +172,7 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
           {notifications.length > 0 && (
             <>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-center text-sm text-primary justify-center">
+              <DropdownMenuItem className="text-center text-xs text-primary justify-center font-medium">
                 View all notifications
               </DropdownMenuItem>
             </>
@@ -147,21 +184,26 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
       {profile && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="gap-2 px-2">
+            <button className="flex items-center gap-2 rounded-md p-1 pr-2 transition-all hover:bg-muted/60 ring-1 ring-transparent hover:ring-border">
               <Avatar className="h-7 w-7">
                 <AvatarImage src={profile.photoURL} />
-                <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                <AvatarFallback className="bg-primary/10 text-primary text-[11px] font-medium">
                   {getInitials(profile.displayName)}
                 </AvatarFallback>
               </Avatar>
               <div className="hidden md:block text-left">
-                <p className="text-sm font-medium leading-none">{profile.displayName}</p>
-                <p className="text-xs text-muted-foreground">{ROLE_LABELS[profile.role]}</p>
+                <p className="text-[13px] font-medium leading-none tracking-tight">{profile.displayName}</p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">{ROLE_LABELS[profile.role]}</p>
               </div>
-            </Button>
+            </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-sm font-medium">{profile.displayName}</span>
+                <span className="text-xs text-muted-foreground font-normal">{profile.email}</span>
+              </div>
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link href="/settings">Settings</Link>

@@ -79,7 +79,7 @@ export default function NewClientPage() {
         <Card>
           <CardHeader><CardTitle className="text-base">Company Details</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Company Name *</Label>
                 <Input placeholder="Al Noor Technologies" {...register("companyName")} />
@@ -97,7 +97,7 @@ export default function NewClientPage() {
                 </Select>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Email</Label>
                 <Input type="email" placeholder="info@company.ae" {...register("email")} />
@@ -108,7 +108,7 @@ export default function NewClientPage() {
                 <Input placeholder="+971 50 123 4567" {...register("phone")} />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>TRN</Label>
                 <Input placeholder="100123456789001" {...register("trn")} />

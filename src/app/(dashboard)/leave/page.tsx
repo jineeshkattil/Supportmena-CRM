@@ -125,19 +125,19 @@ export default function LeavePage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold">Leave Management</h2>
           <p className="text-sm text-muted-foreground">{pendingCount} pending approval</p>
         </div>
-        <Button asChild>
+        <Button asChild className="w-full sm:w-auto">
           <Link href="/leave/new">
             <Plus className="h-4 w-4 mr-2" />Apply Leave
           </Link>
         </Button>
       </div>
 
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           { label: "Pending", value: requests.filter((r) => r.status === "pending").length, icon: Clock, color: "text-yellow-600" },
           { label: "Approved", value: requests.filter((r) => r.status === "approved").length, icon: CheckCircle, color: "text-green-600" },
@@ -205,7 +205,7 @@ export default function LeavePage() {
               </div>
             </div>
           )}
-          <DialogFooter>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
             <Button variant="outline" onClick={() => setSelected(null)}>Cancel</Button>
             <Button variant="destructive" onClick={() => handleApproval("rejected")} disabled={processing}>
               <XCircle className="h-4 w-4 mr-1" />Reject

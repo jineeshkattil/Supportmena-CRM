@@ -72,7 +72,7 @@ export default function TasksPage() {
       </span>
     )},
     { id: "actions", header: "", cell: ({ row }) => (
-      <Button asChild variant="ghost" size="icon" className="h-7 w-7">
+      <Button asChild variant="ghost" size="icon" className="h-9 w-9 sm:h-7 sm:w-7">
         <Link href={`/tasks/${row.original.id}`}><Eye className="h-3.5 w-3.5" /></Link>
       </Button>
     )},
@@ -80,19 +80,19 @@ export default function TasksPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold">Tasks</h2>
           <p className="text-sm text-muted-foreground">{tasks.length} tasks</p>
         </div>
-        <Button asChild>
+        <Button asChild className="w-full sm:w-auto">
           <Link href="/tasks/new">
             <Plus className="h-4 w-4 mr-2" />New Task
           </Link>
         </Button>
       </div>
 
-      <div className="grid grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         {TASK_STATUSES.slice(0, 5).map((s) => (
           <div key={s.value} className="rounded-xl border p-3 bg-card">
             <p className="text-xs text-muted-foreground">{s.label}</p>

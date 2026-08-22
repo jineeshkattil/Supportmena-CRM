@@ -5,7 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Loader2, Settings, Users, Building2, Tag } from "lucide-react";
+import { Loader2, Users, Building2, Tag, ShieldCheck } from "lucide-react";
+import { UserAccessDialog } from "@/components/settings/UserAccessDialog";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,8 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
+  const [accessUser, setAccessUser] = useState<UserProfile | null>(null);
+  const [accessOpen, setAccessOpen] = useState(false);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<CompanyForm>({
     resolver: zodResolver(companySchema),
@@ -70,9 +73,9 @@ export default function SettingsPage() {
         setUsers(snap.docs.map((d) => ({ id: d.id, ...d.data() }) as UserProfile));
       } catch {
         setUsers([
-          { id: "1", email: "admin@supportmena.com", displayName: "Super Admin", role: "super_admin", isActive: true, createdAt: null as never, updatedAt: null as never },
-          { id: "2", email: "finance@supportmena.com", displayName: "Finance Manager", role: "finance", isActive: true, createdAt: null as never, updatedAt: null as never },
-          { id: "3", email: "hr@supportmena.com", displayName: "HR Manager", role: "hr_admin", isActive: true, createdAt: null as never, updatedAt: null as never },
+          { id: "__demo__-1", email: "admin@supportmena.com", displayName: "Super Admin", role: "super_admin", isActive: true, createdAt: null as never, updatedAt: null as never },
+          { id: "__demo__-2", email: "finance@supportmena.com", displayName: "Finance Manager", role: "finance", isActive: true, createdAt: null as never, updatedAt: null as never },
+          { id: "__demo__-3", email: "hr@supportmena.com", displayName: "HR Manager", role: "hr_admin", isActive: true, createdAt: null as never, updatedAt: null as never },
         ]);
       } finally {
         setLoadingUsers(false);
@@ -99,14 +102,14 @@ export default function SettingsPage() {
   const isAdmin = profile?.role === "super_admin";
 
   return (
-    <div className="max-w-3xl space-y-4">
+    <div className="max-w-3xl mx-auto space-y-4">
       <div>
         <h2 className="text-lg font-semibold">Settings</h2>
         <p className="text-sm text-muted-foreground">Manage company and system configuration</p>
       </div>
 
       <Tabs defaultValue="company">
-        <TabsList>
+        <TabsList className="flex w-full overflow-x-auto sm:w-auto sm:inline-flex">
           <TabsTrigger value="company"><Building2 className="h-4 w-4 mr-1.5" />Company</TabsTrigger>
           <TabsTrigger value="users"><Users className="h-4 w-4 mr-1.5" />Users</TabsTrigger>
           <TabsTrigger value="billing"><Tag className="h-4 w-4 mr-1.5" />Billing Config</TabsTrigger>
@@ -120,7 +123,7 @@ export default function SettingsPage() {
                 <CardDescription>Basic details shown on invoices and quotations</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2 col-span-2">
                     <Label>Company Name</Label>
                     <Input {...register("name")} />
@@ -155,7 +158,7 @@ export default function SettingsPage() {
                 <CardTitle className="text-base">Financial Settings</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Currency</Label>
                     <Input {...register("currency")} />
@@ -193,22 +196,51 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y">
-                {users.map((user) => (
-                  <div key={user.id} className="flex items-center justify-between px-6 py-3">
-                    <div>
-                      <p className="font-medium text-sm">{user.displayName}</p>
-                      <p className="text-xs text-muted-foreground">{user.email}</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${ROLE_COLORS[user.role]}`}>
-                        {ROLE_LABELS[user.role]}
-                      </span>
-                      <Badge variant={user.isActive ? "success" : "secondary"} className="text-xs">
-                        {user.isActive ? "Active" : "Inactive"}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
+                {loadingUsers
+                  ? Array.from({ length: 3 }).map((_, i) => (
+                      <div key={i} className="px-6 py-3.5">
+                        <div className="h-3.5 w-40 bg-muted rounded animate-pulse mb-1.5" />
+                        <div className="h-3 w-32 bg-muted rounded animate-pulse" />
+                      </div>
+                    ))
+                  : users.map((user) => (
+                      <div
+                        key={user.id}
+                        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 sm:px-6 py-3"
+                      >
+                        <div className="min-w-0">
+                          <p className="font-medium text-sm truncate">{user.displayName}</p>
+                          <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                          {user.pagePermissions && Array.isArray(user.pagePermissions) && (
+                            <p className="text-[10px] text-primary mt-0.5">
+                              Custom access &middot; {user.pagePermissions.length} pages
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${ROLE_COLORS[user.role]}`}>
+                            {ROLE_LABELS[user.role]}
+                          </span>
+                          <Badge variant={user.isActive ? "success" : "secondary"} className="text-xs">
+                            {user.isActive ? "Active" : "Inactive"}
+                          </Badge>
+                          {isAdmin && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-7 px-2 text-xs"
+                              onClick={() => {
+                                setAccessUser(user);
+                                setAccessOpen(true);
+                              }}
+                            >
+                              <ShieldCheck className="h-3.5 w-3.5 mr-1" />
+                              Access
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
               </div>
             </CardContent>
           </Card>
@@ -222,7 +254,7 @@ export default function SettingsPage() {
                 <CardDescription>Configure prefixes for auto-generated numbers</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label>Invoice Prefix</Label>
                     <Input {...register("invoicePrefix")} />
@@ -251,6 +283,15 @@ export default function SettingsPage() {
           </form>
         </TabsContent>
       </Tabs>
+
+      <UserAccessDialog
+        user={accessUser}
+        open={accessOpen}
+        onOpenChange={setAccessOpen}
+        onSaved={(updated) =>
+          setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)))
+        }
+      />
     </div>
   );
 }

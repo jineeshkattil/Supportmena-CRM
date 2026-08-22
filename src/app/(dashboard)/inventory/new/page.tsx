@@ -1,19 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2 } from "lucide-react";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, getDocs, orderBy, query, where, serverTimestamp } from "firebase/firestore";
+import { getNextSequence } from "@/services/firestore";
 import { db } from "@/lib/firebase";
+import { Supplier } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from "next/link";
 
 const schema = z.object({
@@ -22,6 +25,7 @@ const schema = z.object({
   brand: z.string().optional(),
   model: z.string().optional(),
   sku: z.string().optional(),
+  supplierId: z.string().optional(),
   unitCost: z.coerce.number().min(0),
   sellingPrice: z.coerce.number().min(0),
   currentStock: z.coerce.number().min(0).default(0),
@@ -31,22 +35,56 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
+const DEMO_SUPPLIERS: Pick<Supplier, "id" | "supplierCode" | "companyName">[] = [
+  { id: "demo-sup-1", supplierCode: "SUP-001", companyName: "Hikvision UAE" },
+  { id: "demo-sup-2", supplierCode: "SUP-002", companyName: "TP-Link ME" },
+  { id: "demo-sup-3", supplierCode: "SUP-003", companyName: "Panduit Gulf" },
+];
+
 export default function NewInventoryItemPage() {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
+  const [suppliers, setSuppliers] = useState<Pick<Supplier, "id" | "supplierCode" | "companyName">[]>([]);
+  const [suppliersLoading, setSuppliersLoading] = useState(true);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: { currentStock: 0, minimumStockLevel: 5, unitCost: 0, sellingPrice: 0 },
   });
 
+  const selectedSupplierId = watch("supplierId");
+
+  useEffect(() => {
+    async function loadSuppliers() {
+      try {
+        const snap = await getDocs(
+          query(collection(db, "suppliers"), where("status", "==", "active"), orderBy("companyName"))
+        );
+        const list = snap.docs.map((d) => ({
+          id: d.id,
+          supplierCode: (d.data().supplierCode as string) || "",
+          companyName: (d.data().companyName as string) || "",
+        }));
+        setSuppliers(list.length > 0 ? list : DEMO_SUPPLIERS);
+      } catch {
+        setSuppliers(DEMO_SUPPLIERS);
+      } finally {
+        setSuppliersLoading(false);
+      }
+    }
+    loadSuppliers();
+  }, []);
+
   const onSubmit = async (data: FormData) => {
     setSaving(true);
     try {
-      const num = Math.floor(Math.random() * 9000) + 1000;
+      const num = await getNextSequence("inventory");
+      const supplier = suppliers.find((s) => s.id === data.supplierId);
       await addDoc(collection(db, "inventory"), {
         ...data,
-        itemCode: `INV-${num}`,
+        supplierId: data.supplierId || null,
+        supplierName: supplier?.companyName || null,
+        itemCode: `INV-${String(num).padStart(4, "0")}`,
         reservedStock: 0,
         availableStock: data.currentStock,
         status: "active",
@@ -81,7 +119,7 @@ export default function NewInventoryItemPage() {
               <Input placeholder="Hikvision 4MP Dome Camera" {...register("itemName")} />
               {errors.itemName && <p className="text-xs text-destructive">{errors.itemName.message}</p>}
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Category</Label>
                 <Input placeholder="CCTV Cameras" {...register("categoryName")} />
@@ -99,6 +137,39 @@ export default function NewInventoryItemPage() {
                 <Input placeholder="HK-DS2143" {...register("sku")} />
               </div>
             </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label>Supplier</Label>
+                <Link
+                  href="/suppliers/new"
+                  className="text-xs text-primary hover:underline"
+                >
+                  + Add new supplier
+                </Link>
+              </div>
+              <Select
+                value={selectedSupplierId || ""}
+                onValueChange={(v) => setValue("supplierId", v)}
+                disabled={suppliersLoading}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={suppliersLoading ? "Loading suppliers..." : "Select a supplier"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {suppliers.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>
+                      <span className="font-mono text-xs text-muted-foreground mr-2">{s.supplierCode}</span>
+                      {s.companyName}
+                    </SelectItem>
+                  ))}
+                  {suppliers.length === 0 && !suppliersLoading && (
+                    <div className="px-2 py-1.5 text-xs text-muted-foreground">No suppliers yet</div>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+
             <div className="space-y-2">
               <Label>Description</Label>
               <Textarea rows={2} placeholder="Item description..." {...register("description")} />
@@ -109,7 +180,7 @@ export default function NewInventoryItemPage() {
         <Card>
           <CardHeader><CardTitle className="text-base">Pricing & Stock</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Unit Cost (AED) *</Label>
                 <Input type="number" step="0.01" placeholder="0.00" {...register("unitCost")} />

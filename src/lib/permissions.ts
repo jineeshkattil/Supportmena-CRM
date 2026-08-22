@@ -151,6 +151,70 @@ export const PERMISSIONS: PermissionMap = {
     approve: ["super_admin"],
     export: ["super_admin"],
   },
+  renewals: {
+    view: ALL_ROLES,
+    create: ["super_admin", "management", "finance", "sales"],
+    edit: ["super_admin", "management", "finance", "sales"],
+    delete: ["super_admin"],
+    approve: ["super_admin", "management", "finance"],
+    export: ["super_admin", "management", "finance"],
+  },
+  renewal_clients: {
+    view: ALL_ROLES,
+    create: ["super_admin", "management", "finance", "sales"],
+    edit: ["super_admin", "management", "finance", "sales"],
+    delete: ["super_admin"],
+    approve: ADMIN_ROLES,
+    export: ["super_admin", "management", "finance"],
+  },
+  renewal_providers: {
+    view: ALL_ROLES,
+    create: ["super_admin", "management", "finance"],
+    edit: ["super_admin", "management", "finance"],
+    delete: ["super_admin"],
+    approve: ADMIN_ROLES,
+    export: ["super_admin", "management"],
+  },
+  renewal_services: {
+    view: ALL_ROLES,
+    create: ["super_admin", "management", "finance", "sales"],
+    edit: ["super_admin", "management", "finance", "sales"],
+    delete: ["super_admin"],
+    approve: ADMIN_ROLES,
+    export: ["super_admin", "management", "finance"],
+  },
+  renewal_reminders: {
+    view: ALL_ROLES,
+    create: ["super_admin", "management", "finance"],
+    edit: ["super_admin", "management", "finance", "sales"],
+    delete: ["super_admin"],
+    approve: ADMIN_ROLES,
+    export: ["super_admin", "management", "finance"],
+  },
+  renewal_documents: {
+    view: ["super_admin", "management", "finance", "sales"],
+    create: ["super_admin", "management", "finance", "sales"],
+    edit: ["super_admin", "management", "finance"],
+    delete: ["super_admin"],
+    approve: ["super_admin", "management", "finance"],
+    export: ["super_admin", "management"],
+  },
+  renewal_reports: {
+    view: ["super_admin", "management", "finance"],
+    create: ADMIN_ROLES,
+    edit: ADMIN_ROLES,
+    delete: ["super_admin"],
+    approve: ADMIN_ROLES,
+    export: ["super_admin", "management", "finance"],
+  },
+  renewal_settings: {
+    view: ["super_admin", "management"],
+    create: ["super_admin"],
+    edit: ["super_admin"],
+    delete: ["super_admin"],
+    approve: ["super_admin"],
+    export: ["super_admin"],
+  },
 };
 
 export function hasPermission(
@@ -165,9 +229,46 @@ export function hasPermission(
   return allowedRoles.includes(role);
 }
 
-export function canViewModule(role: UserRole, module: string): boolean {
+export function canViewModule(
+  role: UserRole,
+  module: string,
+  pagePermissions?: string[] | null
+): boolean {
+  // super_admin always has access — never lock the owner out via overrides.
+  if (role === "super_admin") return true;
+  if (pagePermissions && Array.isArray(pagePermissions)) {
+    return pagePermissions.includes(module);
+  }
   return hasPermission(role, module, "view");
 }
+
+export const ALL_MODULES: { id: string; label: string; group: string }[] = [
+  { id: "dashboard", label: "Dashboard", group: "Overview" },
+  { id: "crm", label: "CRM / Clients", group: "Business" },
+  { id: "quotations", label: "Quotations", group: "Business" },
+  { id: "invoices", label: "Invoices", group: "Business" },
+  { id: "projects", label: "Projects", group: "Operations" },
+  { id: "tasks", label: "Tasks", group: "Operations" },
+  { id: "amc", label: "AMC", group: "Operations" },
+  { id: "inventory", label: "Inventory", group: "Inventory" },
+  { id: "purchase", label: "Purchase", group: "Inventory" },
+  { id: "suppliers", label: "Suppliers", group: "Inventory" },
+  { id: "hrms", label: "HRMS", group: "HR & Finance" },
+  { id: "attendance", label: "Attendance", group: "HR & Finance" },
+  { id: "leave", label: "Leave", group: "HR & Finance" },
+  { id: "petty_cash", label: "Petty Cash", group: "HR & Finance" },
+  { id: "expenses", label: "Expenses", group: "HR & Finance" },
+  { id: "reports", label: "Reports", group: "Analytics" },
+  { id: "settings", label: "Settings", group: "Analytics" },
+  { id: "renewals", label: "Renewal Dashboard", group: "Renewals" },
+  { id: "renewal_clients", label: "Renewal Clients", group: "Renewals" },
+  { id: "renewal_providers", label: "Providers", group: "Renewals" },
+  { id: "renewal_services", label: "Services", group: "Renewals" },
+  { id: "renewal_reminders", label: "Reminders", group: "Renewals" },
+  { id: "renewal_documents", label: "Documents", group: "Renewals" },
+  { id: "renewal_reports", label: "Renewal Reports", group: "Renewals" },
+  { id: "renewal_settings", label: "Renewal Settings", group: "Renewals" },
+];
 
 export const ROLE_LABELS: Record<UserRole, string> = {
   super_admin: "Super Admin",

@@ -64,7 +64,7 @@ export default function ExpensesPage() {
       </span>
     )},
     { id: "actions", header: "", cell: ({ row }) => (
-      <Button asChild variant="ghost" size="icon" className="h-7 w-7">
+      <Button asChild variant="ghost" size="icon" className="h-9 w-9 sm:h-7 sm:w-7">
         <Link href={`/expenses/${row.original.id}`}><Eye className="h-3.5 w-3.5" /></Link>
       </Button>
     )},
@@ -74,19 +74,19 @@ export default function ExpensesPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold">Expenses</h2>
           <p className="text-sm text-muted-foreground">{expenses.length} expenses</p>
         </div>
-        <Button asChild>
+        <Button asChild className="w-full sm:w-auto">
           <Link href="/expenses/new">
             <Plus className="h-4 w-4 mr-2" />Add Expense
           </Link>
         </Button>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {[
           { label: "Total Expenses", value: formatCurrency(totalExpenses) },
           { label: "Pending Approval", value: expenses.filter((e) => e.status === "pending").length.toString() },

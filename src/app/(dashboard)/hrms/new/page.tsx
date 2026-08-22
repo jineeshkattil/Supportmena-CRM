@@ -83,7 +83,7 @@ export default function NewEmployeePage() {
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Tabs defaultValue="personal">
-          <TabsList className="mb-4">
+          <TabsList className="mb-4 flex w-full overflow-x-auto sm:w-auto sm:inline-flex">
             <TabsTrigger value="personal">Personal</TabsTrigger>
             <TabsTrigger value="employment">Employment</TabsTrigger>
             <TabsTrigger value="documents">Documents</TabsTrigger>
@@ -94,7 +94,7 @@ export default function NewEmployeePage() {
             <Card>
               <CardHeader><CardTitle className="text-base">Personal Information</CardTitle></CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2 col-span-2">
                     <Label>Full Name *</Label>
                     <Input placeholder="Ahmed Al Rashid" {...register("fullName")} />
@@ -137,7 +137,7 @@ export default function NewEmployeePage() {
             <Card>
               <CardHeader><CardTitle className="text-base">Employment Details</CardTitle></CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Department</Label>
                     <Input placeholder="IT / Operations" {...register("departmentName")} />
@@ -176,7 +176,7 @@ export default function NewEmployeePage() {
             <Card>
               <CardHeader><CardTitle className="text-base">Legal Documents</CardTitle></CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {[
                     { label: "Passport Number", key: "passportNumber" },
                     { label: "Passport Expiry", key: "passportExpiry", type: "date" },
@@ -202,7 +202,7 @@ export default function NewEmployeePage() {
             <Card>
               <CardHeader><CardTitle className="text-base">Salary & Bank Details</CardTitle></CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2 col-span-2">
                     <Label>Basic Salary (AED)</Label>
                     <Input type="number" placeholder="5000" {...register("basicSalary")} />

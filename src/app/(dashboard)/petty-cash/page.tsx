@@ -79,19 +79,19 @@ export default function PettyCashPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold">Petty Cash</h2>
           <p className="text-sm text-muted-foreground">{transactions.length} transactions</p>
         </div>
-        <Button asChild>
+        <Button asChild className="w-full sm:w-auto">
           <Link href="/petty-cash/new">
             <Plus className="h-4 w-4 mr-2" />Assign Cash
           </Link>
         </Button>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {[
           { label: "Total Given", value: formatCurrency(totalGiven), color: "text-blue-600" },
           { label: "Total Spent", value: formatCurrency(totalSpent), color: "text-orange-600" },
